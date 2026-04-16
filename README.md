@@ -100,6 +100,7 @@ Git & GitHub
 
 Criar um sistema funcional de controle nutricional no terminal, aplicando lógica de programação, estruturação de dados e persistência local, como forma de aprendizado prático em Python.
 
-<img width="600" height="645" alt="image" src="https://github.com/user-attachments/assets/ca8157f8-decc-462f-bea1-43bc0e35c1ed" /> Arquivo criado no Figma utilzado como base
+<img width="600" height="645" alt="image" src="https://github.com/user-attachments/assets/ca8157f8-decc-462f-bea1-43bc0e35c1ed" /> 
+Arquivo criado no Figma utilzado como base
 
 

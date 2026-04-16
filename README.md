@@ -4,7 +4,7 @@ VOCÊ NO CONTROLE
 
 Tudo começou quando eu, ainda iniciante em Python, decidi criar meu primeiro projeto no terminal: um mini sistema de controle nutricional.
 
-A ideia inicial era simples, quase básica, mas suficiente para me desafiar a aplicar tudo o que eu vinha aprendendo no estudo da linguagem.
+A ideia inicial era simples, quase básica, mas suficiente para me desafiar a aplicar tudo o que eu vinha aprendendo no estudo da linguagem. 
 
 🗺️ Planejamento e construção da ideia
 

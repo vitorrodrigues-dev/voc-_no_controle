@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Ficha do Usuário</title>
+</head>
+<body>
+    <h1>Ficha do Usuário</h1>
+
+    <form method="POST">
+        <label>Nome: <input type="text" name="nome" value="{{ usuario['nome'] if usuario else '' }}" required></label><br>
+        <label>Idade: <input type="number" name="idade" value="{{ usuario['idade'] if usuario else '' }}" required></label><br>
+        <label>Sexo:
+            <select name="sexo" required>
+                <option value="M" {{ "selected" if usuario and usuario['sexo'] == 'M' else "" }}>Masculino</option>
+                <option value="F" {{ "selected" if usuario and usuario['sexo'] == 'F' else "" }}>Feminino</option>
+            </select>
+        </label><br>
+        <label>Peso atual (kg): <input type="number" step="0.1" name="peso_atual" value="{{ usuario['peso_atual'] if usuario else '' }}" required></label><br>
+        <label>Peso desejado (kg): <input type="number" step="0.1" name="peso_desejado" value="{{ usuario['peso_desejado'] if usuario else '' }}" required></label><br>
+        <label>Altura (cm): <input type="number" step="0.1" name="altura" value="{{ usuario['altura'] if usuario else '' }}" required></label><br>
+        <label>Nível de atividade:
+            <select name="nivel_atividade" required>
+                <option value="1">Baixo</option>
+                <option value="2">Médio</option>
+                <option value="3">Bom</option>
+                <option value="4">Ótimo</option>
+            </select>
+        </label><br>
+        <label>Objetivo:
+            <select name="objetivo" required>
+                <option value="1">Cut</option>
+                <option value="2">Bulk</option>
+                <option value="3">Manutenção</option>
+            </select>
+        </label><br>
+        <button type="submit">Salvar</button>
+    </form>
+
+    {% if usuario %}
+        <hr>
+        <p>TMB: {{ "%.0f"|format(usuario['tmb']) }} kcal</p>
+        <p>Meta diária: {{ "%.0f"|format(usuario['meta_calorica']) }} kcal</p>
+    {% endif %}
+</body>
+</html>

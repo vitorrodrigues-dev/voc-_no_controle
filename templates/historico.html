@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Histórico</title>
+</head>
+<body>
+    <h1>Histórico</h1>
+
+    {% if dias %}
+        <ul>
+        {% for d in dias %}
+            <li><a href="/historico/{{ d['data'] }}">{{ d['data'] }}</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>Nenhum dia registrado ainda.</p>
+    {% endif %}
+</body>
+</html>

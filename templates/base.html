@@ -22,7 +22,10 @@
         </nav>
     </header>
 
-    <main class="conteudo">
+      <main class="conteudo">
+        {% if request.path != '/' %}
+            <a href="javascript:history.back()" class="link-voltar">← Voltar</a>
+        {% endif %}
         {% block conteudo %}{% endblock %}
     </main>
 

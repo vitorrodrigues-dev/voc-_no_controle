@@ -5,6 +5,10 @@
 {% block conteudo %}
     <h1>Ficha do Usuário</h1>
 
+    {% if usuario %}
+        <p class="aviso-edicao">Editando sua ficha existente — salvar atualiza os dados atuais.</p>
+    {% endif %}
+
     <form method="POST" class="formulario">
         <label>Nome
             <input type="text" name="nome" value="{{ usuario['nome'] if usuario else '' }}" required>
@@ -35,18 +39,18 @@
 
         <label>Nível de atividade
             <select name="nivel_atividade" required>
-                <option value="1">Baixo</option>
-                <option value="2">Médio</option>
-                <option value="3">Bom</option>
-                <option value="4">Ótimo</option>
+                <option value="1" {{ "selected" if usuario and usuario['nivel_atividade'] == 1 else "" }}>Baixo — pouco ou nenhum treino (0 a 1x por semana)</option>
+                <option value="2" {{ "selected" if usuario and usuario['nivel_atividade'] == 2 else "" }}>Médio — treino leve (2 a 3x por semana)</option>
+                <option value="3" {{ "selected" if usuario and usuario['nivel_atividade'] == 3 else "" }}>Bom — treino moderado a intenso (4 a 5x por semana)</option>
+                <option value="4" {{ "selected" if usuario and usuario['nivel_atividade'] == 4 else "" }}>Ótimo — treino intenso diário ou trabalho físico</option>
             </select>
         </label>
 
         <label>Objetivo
             <select name="objetivo" required>
-                <option value="1">Cut</option>
-                <option value="2">Bulk</option>
-                <option value="3">Manutenção</option>
+                <option value="1" {{ "selected" if usuario and usuario['objetivo'] == 1 else "" }}>Cut — perda de gordura</option>
+                <option value="2" {{ "selected" if usuario and usuario['objetivo'] == 2 else "" }}>Bulk — ganho de massa</option>
+                <option value="3" {{ "selected" if usuario and usuario['objetivo'] == 3 else "" }}>Manutenção</option>
             </select>
         </label>
 
@@ -55,8 +59,13 @@
 
     {% if usuario %}
         <div class="cartao-resultado">
+            <p class="fonte-formula">Calculado via fórmula de Harris-Benedict, ajustado pelo seu nível de atividade</p>
             <p>TMB: <strong>{{ "%.0f"|format(usuario['tmb']) }} kcal</strong></p>
             <p>Meta diária: <strong>{{ "%.0f"|format(usuario['meta_calorica']) }} kcal</strong></p>
+            <hr>
+            <p>Proteína: <strong>{{ "%.0f"|format(usuario['meta_proteina']) }} g</strong></p>
+            <p>Carboidrato: <strong>{{ "%.0f"|format(usuario['meta_carbo']) }} g</strong></p>
+            <p>Gordura: <strong>{{ "%.0f"|format(usuario['meta_gordura']) }} g</strong></p>
         </div>
     {% endif %}
 {% endblock %}

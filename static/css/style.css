@@ -327,3 +327,129 @@ button:focus-visible {
     font-size: 0.9rem;
     margin: 0;
 }
+
+.link-voltar {
+    display: inline-block;
+    color: var(--cor-texto-secundario);
+    font-size: 0.9rem;
+    margin-bottom: 1.5rem;
+    transition: color var(--transicao);
+}
+
+.link-voltar:hover {
+    color: var(--cor-acento);
+}
+
+.aviso-edicao {
+    background-color: var(--cor-marca);
+    color: var(--cor-texto);
+    font-size: 0.85rem;
+    padding: 0.6rem 1rem;
+    border-radius: var(--raio);
+    margin-bottom: 1rem;
+}
+
+.fonte-formula {
+    font-size: 0.8rem;
+    color: var(--cor-texto-secundario);
+    font-style: italic;
+    margin-bottom: 0.8rem;
+}
+
+.titulo-categoria {
+    color: var(--cor-acento);
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+}
+
+.tabela-alimentos {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+    font-size: 0.85rem;
+}
+
+.tabela-alimentos th,
+.tabela-alimentos td {
+    text-align: left;
+    padding: 0.5rem 0.7rem;
+    border-bottom: 1px solid var(--cor-borda);
+}
+
+.tabela-alimentos th {
+    color: var(--cor-texto-secundario);
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.tabela-alimentos tbody tr:hover {
+    background-color: var(--cor-superficie);
+}
+
+@media (max-width: 600px) {
+    .tabela-alimentos {
+        font-size: 0.75rem;
+    }
+
+    .tabela-alimentos th,
+    .tabela-alimentos td {
+        padding: 0.4rem;
+    }
+}
+
+.grade-macros {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.card-macro {
+    background-color: var(--cor-superficie);
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio);
+    padding: 1.1rem;
+}
+
+.card-macro h3 {
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+    color: var(--cor-texto);
+}
+
+.macro-valor {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.6rem;
+}
+
+.barra-macro {
+    width: 100%;
+    height: 6px;
+    background-color: var(--cor-fundo);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 0.6rem;
+}
+
+.barra-macro-preenchida {
+    height: 100%;
+    background-color: var(--cor-acento);
+    transition: width 600ms ease;
+}
+
+.macro-aviso {
+    font-size: 0.8rem;
+    color: var(--cor-alerta);
+}
+
+.macro-aviso--ok {
+    color: var(--cor-acento);
+}
+
+.card-macro--acima .barra-macro-preenchida {
+    background-color: var(--cor-alerta);
+}

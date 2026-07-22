@@ -21,28 +21,32 @@ def salvar_usuario(dados):
         conn.execute("""
             UPDATE usuario SET
                 nome = ?, idade = ?, sexo = ?, peso_atual = ?, peso_desejado = ?,
-                altura = ?, nivel_atividade = ?, objetivo = ?, tmb = ?, meta_calorica = ?
+                altura = ?, nivel_atividade = ?, objetivo = ?, tmb = ?, meta_calorica = ?,
+                meta_proteina = ?, meta_carbo = ?, meta_gordura = ?
             WHERE id = ?
         """, (
             dados["nome"], dados["idade"], dados["sexo"], dados["peso_atual"],
             dados["peso_desejado"], dados["altura"], dados["nivel_atividade"],
-            dados["objetivo"], dados["tmb"], dados["meta_calorica"], existente["id"]
+            dados["objetivo"], dados["tmb"], dados["meta_calorica"],
+            dados["meta_proteina"], dados["meta_carbo"], dados["meta_gordura"], existente["id"]
         ))
     else:
         conn.execute("""
             INSERT INTO usuario
                 (nome, idade, sexo, peso_atual, peso_desejado, altura,
-                 nivel_atividade, objetivo, tmb, meta_calorica)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                 nivel_atividade, objetivo, tmb, meta_calorica,
+                 meta_proteina, meta_carbo, meta_gordura)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         """, (
             dados["nome"], dados["idade"], dados["sexo"], dados["peso_atual"],
             dados["peso_desejado"], dados["altura"], dados["nivel_atividade"],
-            dados["objetivo"], dados["tmb"], dados["meta_calorica"]
+            dados["objetivo"], dados["tmb"], dados["meta_calorica"],
+            dados["meta_proteina"], dados["meta_carbo"], dados["meta_gordura"]
         ))
 
     conn.commit()
     conn.close()
-
+    
 def listar_alimentos():
     conn = conectar()
     alimentos = conn.execute("SELECT * FROM alimento ORDER BY categoria, nome").fetchall()

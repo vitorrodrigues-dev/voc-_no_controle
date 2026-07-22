@@ -29,6 +29,35 @@
         <button type="submit" class="botao">Registrar</button>
     </form>
 
+    <hr>
+    <h2>Alimentos disponíveis</h2>
+
+    {% for categoria, lista in alimentos_por_categoria.items() %}
+        <h3 class="titulo-categoria">{{ categoria|capitalize }}</h3>
+        <table class="tabela-alimentos">
+            <thead>
+                <tr>
+                    <th>Alimento</th>
+                    <th>Kcal /100g</th>
+                    <th>Prot /100g</th>
+                    <th>Carbo /100g</th>
+                    <th>Gord /100g</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in lista %}
+                    <tr>
+                        <td>{{ a['nome'] }}</td>
+                        <td>{{ "%.0f"|format(a['kcal_100g']) }}</td>
+                        <td>{{ "%.1f"|format(a['proteina_100g']) }}</td>
+                        <td>{{ "%.1f"|format(a['carbo_100g']) }}</td>
+                        <td>{{ "%.1f"|format(a['gordura_100g']) }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endfor %}
+
     <script>
         const alimentos = [
             {% for a in alimentos %}

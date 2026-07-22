@@ -6,21 +6,56 @@
     <h1>Progresso — {{ hoje }}</h1>
 
     {% set total_kcal = totais['total_kcal'] or 0 %}
-    {% set meta = usuario['meta_calorica'] if usuario else 0 %}
-    {% set percentual = (total_kcal / meta * 100) if meta > 0 else 0 %}
+    {% set total_prot = totais['total_prot'] or 0 %}
+    {% set total_carbo = totais['total_carbo'] or 0 %}
+    {% set total_gord = totais['total_gord'] or 0 %}
+
+    {% set meta_kcal = usuario['meta_calorica'] if usuario else 0 %}
+    {% set meta_prot = usuario['meta_proteina'] if usuario else 0 %}
+    {% set meta_carbo = usuario['meta_carbo'] if usuario else 0 %}
+    {% set meta_gord = usuario['meta_gordura'] if usuario else 0 %}
+
+    {% set percentual = (total_kcal / meta_kcal * 100) if meta_kcal > 0 else 0 %}
 
     <div class="anel-progresso" style="--percentual: {{ percentual }};">
         <div class="anel-numero">
             <strong>{{ "%.0f"|format(total_kcal) }}</strong>
-            <span>/ {{ "%.0f"|format(meta) }} kcal</span>
+            <span>/ {{ "%.0f"|format(meta_kcal) }} kcal</span>
         </div>
     </div>
 
     <div class="cartao-resultado">
-        <p>Restante: <strong>{{ "%.0f"|format(meta - total_kcal) }} kcal</strong></p>
-        <p>Proteína: <strong>{{ "%.1f"|format(totais['total_prot'] or 0) }} g</strong></p>
-        <p>Carboidrato: <strong>{{ "%.1f"|format(totais['total_carbo'] or 0) }} g</strong></p>
-        <p>Gordura: <strong>{{ "%.1f"|format(totais['total_gord'] or 0) }} g</strong></p>
+        <p>Restante: <strong>{{ "%.0f"|format(meta_kcal - total_kcal) }} kcal</strong></p>
+    </div>
+
+    <h2>Macros do dia</h2>
+    <div class="grade-macros">
+        {% set macros = [
+            ("Proteína", total_prot, meta_prot, "g"),
+            ("Carboidrato", total_carbo, meta_carbo, "g"),
+            ("Gordura", total_gord, meta_gord, "g")
+        ] %}
+
+        {% for nome_macro, atual, meta, unidade in macros %}
+            {% set diferenca = atual - meta %}
+            {% set percentual_macro = (atual / meta * 100) if meta > 0 else 0 %}
+            {% set status = "abaixo" if percentual_macro < 85 else ("acima" if percentual_macro > 115 else "ok") %}
+
+            <div class="card-macro card-macro--{{ status }}">
+                <h3>{{ nome_macro }}</h3>
+                <p class="macro-valor">{{ "%.0f"|format(atual) }} / {{ "%.0f"|format(meta) }} {{ unidade }}</p>
+                <div class="barra-macro">
+                    <div class="barra-macro-preenchida" style="width: {{ [percentual_macro, 100] | min }}%;"></div>
+                </div>
+                {% if status == "abaixo" %}
+                    <p class="macro-aviso">Faltam {{ "%.0f"|format(diferenca * -1) }}{{ unidade }} para bater a meta</p>
+                {% elif status == "acima" %}
+                    <p class="macro-aviso">{{ "%.0f"|format(diferenca) }}{{ unidade }} acima da meta</p>
+                {% else %}
+                    <p class="macro-aviso macro-aviso--ok">Dentro da meta</p>
+                {% endif %}
+            </div>
+        {% endfor %}
     </div>
 
     <hr>

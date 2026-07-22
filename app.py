@@ -31,16 +31,28 @@ def ficha():
 
         if objetivo == 1:
             meta = tmb_total - 500
+            g_prot_kg = 2.2
+            g_gord_kg = 0.9
         elif objetivo == 2:
             meta = tmb_total + 400
+            g_prot_kg = 2.0
+            g_gord_kg = 1.0
         else:
             meta = tmb_total
+            g_prot_kg = 1.8
+            g_gord_kg = 1.0
+
+        meta_proteina = g_prot_kg * peso_atual
+        meta_gordura = g_gord_kg * peso_atual
+        kcal_restante = meta - (meta_proteina * 4) - (meta_gordura * 9)
+        meta_carbo = max(kcal_restante / 4, 0)
 
         dados = {
             "nome": nome, "idade": idade, "sexo": sexo,
             "peso_atual": peso_atual, "peso_desejado": peso_desejado,
             "altura": altura, "nivel_atividade": nivel_atividade,
-            "objetivo": objetivo, "tmb": tmb, "meta_calorica": meta
+            "objetivo": objetivo, "tmb": tmb, "meta_calorica": meta,
+            "meta_proteina": meta_proteina, "meta_carbo": meta_carbo, "meta_gordura": meta_gordura
         }
         salvar_usuario(dados)
         return redirect("/ficha")
@@ -65,7 +77,13 @@ def registrar():
         return redirect("/registrar")
 
     alimentos = listar_alimentos()
-    return render_template("registrar.html", alimentos=alimentos)
+
+    alimentos_por_categoria = {}
+    for a in alimentos:
+        cat = a["categoria"]
+        alimentos_por_categoria.setdefault(cat, []).append(a)
+
+    return render_template("registrar.html", alimentos=alimentos, alimentos_por_categoria=alimentos_por_categoria)
 
 @app.route("/progresso")
 def progresso():

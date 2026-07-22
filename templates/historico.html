@@ -5,10 +5,20 @@
 {% block conteudo %}
     <h1>Histórico</h1>
 
-    {% if dias %}
-        <ul class="lista-historico">
-        {% for d in dias %}
-            <li><a href="/historico/{{ d['data'] }}">{{ d['data'] }}</a></li>
+    {% if resumo_dias %}
+        <ul class="lista-historico-resumo">
+        {% for d in resumo_dias %}
+            <li>
+                <a href="/historico/{{ d['data'] }}" class="item-historico">
+                    <div class="item-historico-topo">
+                        <span class="item-historico-data">{{ d['data'] }}</span>
+                        <span class="item-historico-kcal">{{ "%.0f"|format(d['kcal']) }} / {{ "%.0f"|format(d['meta']) }} kcal</span>
+                    </div>
+                    <div class="barra-macro">
+                        <div class="barra-macro-preenchida" style="width: {{ d['percentual'] }}%;"></div>
+                    </div>
+                </a>
+            </li>
         {% endfor %}
         </ul>
     {% else %}

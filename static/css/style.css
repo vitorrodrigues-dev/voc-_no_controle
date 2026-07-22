@@ -453,3 +453,72 @@ button:focus-visible {
 .card-macro--acima .barra-macro-preenchida {
     background-color: var(--cor-alerta);
 }
+
+.lista-historico-resumo {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+    margin-top: 1rem;
+}
+
+.item-historico {
+    display: block;
+    background-color: var(--cor-superficie);
+    border: 1px solid var(--cor-borda);
+    border-radius: var(--raio);
+    padding: 1rem 1.2rem;
+    transition: border-color var(--transicao);
+}
+
+.item-historico:hover {
+    border-color: var(--cor-acento);
+    color: var(--cor-texto);
+}
+
+.item-historico-topo {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.item-historico-data {
+    font-weight: 600;
+    color: var(--cor-texto);
+}
+
+.item-historico-kcal {
+    color: var(--cor-texto-secundario);
+}
+
+.hero {
+    text-align: center;
+    padding: 3rem 1rem 2.5rem;
+}
+
+.hero h1 {
+    font-size: 2.6rem;
+    margin-bottom: 0.5rem;
+}
+
+.hero-subtitulo {
+    color: var(--cor-texto-secundario);
+    font-size: 1.05rem;
+    margin-bottom: 1.5rem;
+}
+
+.hero-frase {
+    font-family: var(--fonte-titulo);
+    font-style: italic;
+    font-size: 1.2rem;
+    color: var(--cor-acento);
+    max-width: 480px;
+    margin: 0 auto;
+}
+
+@media (max-width: 600px) {
+    .hero h1 {
+        font-size: 2rem;
+    }
+}

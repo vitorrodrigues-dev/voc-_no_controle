@@ -4,10 +4,21 @@ from datetime import date
 
 app = Flask(__name__)
 
+import random
+
+FRASES_MOTIVACIONAIS = [
+    "Disciplina é fazer o que precisa ser feito, mesmo sem vontade.",
+    "Consistência bate intensidade no longo prazo.",
+    "Você não precisa ser perfeito, precisa ser constante.",
+    "O resultado de hoje é o hábito de ontem.",
+    "Progresso não é sempre visível no espelho — é visível no registro.",
+]
+
 @app.route("/")
 def home():
     usuario = buscar_usuario()
-    return render_template("home.html", usuario=usuario)
+    frase = random.choice(FRASES_MOTIVACIONAIS)
+    return render_template("home.html", usuario=usuario, frase=frase)
 
 @app.route("/ficha", methods=["GET", "POST"])
 def ficha():
@@ -106,8 +117,21 @@ def historico():
         return redirect("/ficha")
 
     dias = listar_dias_com_registro(usuario["id"])
-    return render_template("historico.html", dias=dias)
 
+    resumo_dias = []
+    for d in dias:
+        totais = progresso_do_dia(usuario["id"], d["data"])
+        kcal = totais["total_kcal"] or 0
+        meta = usuario["meta_calorica"] or 0
+        percentual = min((kcal / meta * 100) if meta > 0 else 0, 100)
+        resumo_dias.append({
+            "data": d["data"],
+            "kcal": kcal,
+            "meta": meta,
+            "percentual": percentual
+        })
+
+    return render_template("historico.html", resumo_dias=resumo_dias)
 @app.route("/historico/<data>")
 def historico_dia(data):
     usuario = buscar_usuario()

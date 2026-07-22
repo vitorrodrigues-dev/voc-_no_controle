@@ -3,13 +3,17 @@
 {% block titulo %}Você no Controle{% endblock %}
 
 {% block conteudo %}
-    {% if usuario %}
-        <h1>Olá, {{ usuario['nome'] }}</h1>
-        <p class="vazio">Sua meta diária: {{ "%.0f"|format(usuario['meta_calorica']) }} kcal</p>
-    {% else %}
-        <h1>Você no Controle</h1>
-        <p class="vazio">Comece criando sua ficha para calcular sua meta calórica.</p>
-    {% endif %}
+    <div class="hero">
+        {% if usuario %}
+            <h1>Olá, {{ usuario['nome'] }}</h1>
+            <p class="hero-subtitulo">Sua meta diária: {{ "%.0f"|format(usuario['meta_calorica']) }} kcal</p>
+        {% else %}
+            <h1>Você no Controle</h1>
+            <p class="hero-subtitulo">Comece criando sua ficha para calcular sua meta calórica.</p>
+        {% endif %}
+
+        <p class="hero-frase">"{{ frase }}"</p>
+    </div>
 
     <div class="grade-cards">
         <a href="/ficha" class="card-nav">

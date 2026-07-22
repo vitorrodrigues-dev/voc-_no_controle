@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block titulo %}Você no Controle{% endblock %}
+
+{% block conteudo %}
+    {% if usuario %}
+        <h1>Olá, {{ usuario['nome'] }}</h1>
+        <p class="vazio">Sua meta diária: {{ "%.0f"|format(usuario['meta_calorica']) }} kcal</p>
+    {% else %}
+        <h1>Você no Controle</h1>
+        <p class="vazio">Comece criando sua ficha para calcular sua meta calórica.</p>
+    {% endif %}
+
+    <div class="grade-cards">
+        <a href="/ficha" class="card-nav">
+            <h2>Ficha</h2>
+            <p>Seus dados e meta calórica</p>
+        </a>
+        <a href="/registrar" class="card-nav">
+            <h2>Registrar</h2>
+            <p>Adicionar uma refeição de hoje</p>
+        </a>
+        <a href="/progresso" class="card-nav">
+            <h2>Progresso</h2>
+            <p>Ver o que já foi consumido hoje</p>
+        </a>
+        <a href="/historico" class="card-nav">
+            <h2>Histórico</h2>
+            <p>Consultar dias anteriores</p>
+        </a>
+    </div>
+{% endblock %}

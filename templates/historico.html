@@ -1,20 +1,17 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Histórico</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block titulo %}Histórico — Você no Controle{% endblock %}
+
+{% block conteudo %}
     <h1>Histórico</h1>
 
     {% if dias %}
-        <ul>
+        <ul class="lista-historico">
         {% for d in dias %}
             <li><a href="/historico/{{ d['data'] }}">{{ d['data'] }}</a></li>
         {% endfor %}
         </ul>
     {% else %}
-        <p>Nenhum dia registrado ainda.</p>
+        <p class="vazio">Nenhum dia registrado ainda.</p>
     {% endif %}
-</body>
-</html>
+{% endblock %}

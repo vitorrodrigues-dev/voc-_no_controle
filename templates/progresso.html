@@ -1,31 +1,40 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <title>Progresso do Dia</title>
-</head>
-<body>
+{% extends "base.html" %}
+
+{% block titulo %}Progresso — Você no Controle{% endblock %}
+
+{% block conteudo %}
     <h1>Progresso — {{ hoje }}</h1>
 
     {% set total_kcal = totais['total_kcal'] or 0 %}
     {% set meta = usuario['meta_calorica'] if usuario else 0 %}
+    {% set percentual = (total_kcal / meta * 100) if meta > 0 else 0 %}
 
-    <p>Calorias: {{ "%.0f"|format(total_kcal) }} / {{ "%.0f"|format(meta) }} kcal
-        (restante: {{ "%.0f"|format(meta - total_kcal) }} kcal)</p>
-    <p>Proteína: {{ "%.1f"|format(totais['total_prot'] or 0) }} g</p>
-    <p>Carboidrato: {{ "%.1f"|format(totais['total_carbo'] or 0) }} g</p>
-    <p>Gordura: {{ "%.1f"|format(totais['total_gord'] or 0) }} g</p>
+    <div class="anel-progresso" style="--percentual: {{ percentual }};">
+        <div class="anel-numero">
+            <strong>{{ "%.0f"|format(total_kcal) }}</strong>
+            <span>/ {{ "%.0f"|format(meta) }} kcal</span>
+        </div>
+    </div>
+
+    <div class="cartao-resultado">
+        <p>Restante: <strong>{{ "%.0f"|format(meta - total_kcal) }} kcal</strong></p>
+        <p>Proteína: <strong>{{ "%.1f"|format(totais['total_prot'] or 0) }} g</strong></p>
+        <p>Carboidrato: <strong>{{ "%.1f"|format(totais['total_carbo'] or 0) }} g</strong></p>
+        <p>Gordura: <strong>{{ "%.1f"|format(totais['total_gord'] or 0) }} g</strong></p>
+    </div>
 
     <hr>
-    <h2>Refeições de hoje</h2>
+    <h2>Refeições do dia</h2>
     {% if refeicoes %}
-        <ul>
+        <ul class="lista-refeicoes">
         {% for r in refeicoes %}
-            <li>[{{ r['nome_refeicao'] }}] {{ r['alimento'] }} — {{ r['gramas'] }}g — {{ "%.0f"|format(r['kcal']) }} kcal</li>
+            <li>
+                <span class="tag-refeicao">{{ r['nome_refeicao'] }}</span>
+                {{ r['alimento'] }} — {{ r['gramas'] }}g — {{ "%.0f"|format(r['kcal']) }} kcal
+            </li>
         {% endfor %}
         </ul>
     {% else %}
-        <p>Nenhuma refeição registrada hoje.</p>
+        <p class="vazio">Nenhuma refeição registrada nesse dia.</p>
     {% endif %}
-</body>
-</html>
+{% endblock %}

@@ -6,7 +6,8 @@ app = Flask(__name__)
 
 @app.route("/")
 def home():
-    return "Funcionando!"
+    usuario = buscar_usuario()
+    return render_template("home.html", usuario=usuario)
 
 @app.route("/ficha", methods=["GET", "POST"])
 def ficha():
@@ -51,6 +52,9 @@ def ficha():
 def registrar():
     usuario = buscar_usuario()
 
+    if usuario is None:
+        return redirect("/ficha")
+
     if request.method == "POST":
         alimento_id = int(request.form["alimento_id"])
         gramas = float(request.form["gramas"])
@@ -66,8 +70,11 @@ def registrar():
 @app.route("/progresso")
 def progresso():
     usuario = buscar_usuario()
-    hoje = str(date.today())
 
+    if usuario is None:
+        return redirect("/ficha")
+
+    hoje = str(date.today())
     totais = progresso_do_dia(usuario["id"], hoje)
     refeicoes = listar_refeicoes_do_dia(usuario["id"], hoje)
 
@@ -76,12 +83,20 @@ def progresso():
 @app.route("/historico")
 def historico():
     usuario = buscar_usuario()
+
+    if usuario is None:
+        return redirect("/ficha")
+
     dias = listar_dias_com_registro(usuario["id"])
     return render_template("historico.html", dias=dias)
 
 @app.route("/historico/<data>")
 def historico_dia(data):
     usuario = buscar_usuario()
+
+    if usuario is None:
+        return redirect("/ficha")
+
     totais = progresso_do_dia(usuario["id"], data)
     refeicoes = listar_refeicoes_do_dia(usuario["id"], data)
     return render_template("progresso.html", usuario=usuario, totais=totais, refeicoes=refeicoes, hoje=data)

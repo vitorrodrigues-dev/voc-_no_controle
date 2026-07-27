@@ -10,6 +10,9 @@ CREATE TABLE usuario (
     objetivo INTEGER NOT NULL CHECK(objetivo IN (1,2,3)),
     tmb REAL,
     meta_calorica REAL,
+    meta_proteina REAL,
+    meta_carbo REAL,
+    meta_gordura REAL,
     criado_em TEXT DEFAULT CURRENT_TIMESTAMP
 );
 

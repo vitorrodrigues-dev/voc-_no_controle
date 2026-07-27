@@ -66,6 +66,8 @@
             <p>Proteína: <strong>{{ "%.0f"|format(usuario['meta_proteina']) }} g</strong></p>
             <p>Carboidrato: <strong>{{ "%.0f"|format(usuario['meta_carbo']) }} g</strong></p>
             <p>Gordura: <strong>{{ "%.0f"|format(usuario['meta_gordura']) }} g</strong></p>
+            <hr>
+            <p>Faltam <strong>{{ "%.1f"|format((usuario['peso_atual'] - usuario['peso_desejado'])|abs) }} kg</strong> para o peso desejado</p>
         </div>
     {% endif %}
 {% endblock %}

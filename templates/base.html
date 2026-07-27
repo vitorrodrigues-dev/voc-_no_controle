@@ -26,6 +26,17 @@
         {% if request.path != '/' %}
             <a href="javascript:history.back()" class="link-voltar">← Voltar</a>
         {% endif %}
+
+        {% with mensagens = get_flashed_messages() %}
+            {% if mensagens %}
+                <div class="alerta-erro">
+                    {% for mensagem in mensagens %}
+                        <p>{{ mensagem }}</p>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        {% endwith %}
+
         {% block conteudo %}{% endblock %}
     </main>
 

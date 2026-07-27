@@ -1,4 +1,7 @@
-from utils import salvar_json, carregar_json, perguntar_int, perguntar_float, perguntar_sim_nao
+try:
+    from legado.utils import salvar_json, carregar_json, perguntar_int, perguntar_float, perguntar_sim_nao
+except ImportError:
+    from utils import salvar_json, carregar_json, perguntar_int, perguntar_float, perguntar_sim_nao
 
 ARQUIVO_DIETA = "dieta.json"
 ARQUIVO_FICHA = "ficha.json"

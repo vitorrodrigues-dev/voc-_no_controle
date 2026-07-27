@@ -1,10 +1,12 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, flash
 from database import buscar_usuario, salvar_usuario, listar_alimentos, registrar_refeicao, progresso_do_dia, listar_refeicoes_do_dia, listar_dias_com_registro
 from datetime import date
+import os
+import random
+import sqlite3
 
 app = Flask(__name__)
-
-import random
+app.secret_key = os.urandom(24)
 
 FRASES_MOTIVACIONAIS = [
     "Disciplina é fazer o que precisa ser feito, mesmo sem vontade.",
@@ -23,21 +25,30 @@ def home():
 @app.route("/ficha", methods=["GET", "POST"])
 def ficha():
     if request.method == "POST":
-        nome = request.form["nome"]
-        idade = int(request.form["idade"])
-        sexo = request.form["sexo"]
-        peso_atual = float(request.form["peso_atual"])
-        peso_desejado = float(request.form["peso_desejado"])
-        altura = float(request.form["altura"])
-        nivel_atividade = int(request.form["nivel_atividade"])
-        objetivo = int(request.form["objetivo"])
+        try:
+            nome = request.form["nome"]
+            idade = int(request.form["idade"])
+            sexo = request.form["sexo"]
+            peso_atual = float(request.form["peso_atual"])
+            peso_desejado = float(request.form["peso_desejado"])
+            altura = float(request.form["altura"])
+            nivel_atividade = int(request.form["nivel_atividade"])
+            objetivo = int(request.form["objetivo"])
+
+            fatores = {1: 1.2, 2: 1.375, 3: 1.55, 4: 1.725}
+            if nivel_atividade not in fatores:
+                raise ValueError("nivel_atividade fora do esperado")
+            if objetivo not in (1, 2, 3):
+                raise ValueError("objetivo fora do esperado")
+        except (ValueError, KeyError):
+            flash("Não foi possível salvar a ficha — confira se todos os campos foram preenchidos corretamente.")
+            return redirect("/ficha")
 
         if sexo == "M":
             tmb = 88.36 + (13.4 * peso_atual) + (4.8 * altura) - (5.7 * idade)
         else:
             tmb = 447.6 + (9.2 * peso_atual) + (3.1 * altura) - (4.3 * idade)
 
-        fatores = {1: 1.2, 2: 1.375, 3: 1.55, 4: 1.725}
         tmb_total = tmb * fatores[nivel_atividade]
 
         if objetivo == 1:
@@ -79,12 +90,22 @@ def registrar():
         return redirect("/ficha")
 
     if request.method == "POST":
-        alimento_id = int(request.form["alimento_id"])
-        gramas = float(request.form["gramas"])
-        nome_refeicao = request.form["nome_refeicao"]
+        try:
+            alimento_id = int(request.form["alimento_id"])
+            gramas = float(request.form["gramas"])
+            nome_refeicao = request.form["nome_refeicao"]
+        except (ValueError, KeyError):
+            flash("Não foi possível registrar a refeição — confira se todos os campos foram preenchidos corretamente.")
+            return redirect("/registrar")
+
         hoje = str(date.today())
 
-        registrar_refeicao(usuario["id"], alimento_id, hoje, nome_refeicao, gramas)
+        try:
+            registrar_refeicao(usuario["id"], alimento_id, hoje, nome_refeicao, gramas)
+        except sqlite3.IntegrityError:
+            flash("Não foi possível registrar a refeição — alimento selecionado é inválido.")
+            return redirect("/registrar")
+
         return redirect("/registrar")
 
     alimentos = listar_alimentos()
@@ -142,6 +163,14 @@ def historico_dia(data):
     totais = progresso_do_dia(usuario["id"], data)
     refeicoes = listar_refeicoes_do_dia(usuario["id"], data)
     return render_template("progresso.html", usuario=usuario, totais=totais, refeicoes=refeicoes, hoje=data)
+
+@app.errorhandler(404)
+def pagina_nao_encontrada(erro):
+    return render_template("404.html"), 404
+
+@app.errorhandler(500)
+def erro_interno(erro):
+    return render_template("500.html"), 500
 
 if __name__ == "__main__":
     app.run(debug=True)

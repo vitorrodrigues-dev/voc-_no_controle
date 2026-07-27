@@ -1,5 +1,5 @@
 import sqlite3
-from dieta import alimentos
+from legado.dieta import alimentos
 
 DB = "nutricao.db"
 

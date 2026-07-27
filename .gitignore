@@ -2,3 +2,4 @@ __pycache__/
 .idea/
 ficha.json
 dieta.json
+nutricao.db

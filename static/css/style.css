@@ -340,6 +340,20 @@ button:focus-visible {
     color: var(--cor-acento);
 }
 
+.alerta-erro {
+    background-color: rgba(217, 105, 95, 0.15);
+    border: 1px solid var(--cor-alerta);
+    color: var(--cor-alerta);
+    font-size: 0.9rem;
+    padding: 0.8rem 1rem;
+    border-radius: var(--raio);
+    margin-bottom: 1.5rem;
+}
+
+.alerta-erro p:last-child {
+    margin-bottom: 0;
+}
+
 .aviso-edicao {
     background-color: var(--cor-marca);
     color: var(--cor-texto);

@@ -1,106 +1,71 @@
-VOCÊ NO CONTROLE
- 
- 🧠 Do Zero ao Primeiro Sistema em Python
+# Você no Controle
 
-Tudo começou quando eu, ainda iniciante em Python, decidi criar meu primeiro projeto no terminal: um mini sistema de controle nutricional.
+Sistema web de controle nutricional: cálculo de meta calórica e de macronutrientes, registro de refeições, acompanhamento diário de progresso e histórico por data.
 
-A ideia inicial era simples, quase básica, mas suficiente para me desafiar a aplicar tudo o que eu vinha aprendendo no estudo da linguagem. 
+Este projeto nasceu como uma aplicação de terminal (Python puro + JSON) e foi migrado para uma aplicação web completa em Flask + SQLite, aplicando modelagem de dados relacional, separação de camadas e boas práticas de desenvolvimento web.
 
-🗺️ Planejamento e construção da ideia
+## Stack
 
-Antes de escrever qualquer linha de código, comecei pelo mais importante: o planejamento.
+- **Backend:** Python + Flask
+- **Banco de dados:** SQLite
+- **Front-end:** HTML + CSS + JavaScript puro (sem frameworks)
 
-Estruturei o fluxo do sistema, imaginando como ele funcionaria na prática:
+## Funcionalidades
 
-abrir o menu principal
-acessar ficha do usuário
-registrar refeições
-acompanhar a dieta
-visualizar progresso
+- Cadastro de ficha do usuário (idade, peso, altura, nível de atividade, objetivo)
+- Cálculo de TMB via fórmula de Harris-Benedict, ajustado por nível de atividade
+- Cálculo de meta calórica diária (déficit para cut, superávit para bulk, ou manutenção)
+- Cálculo de metas de macronutrientes (proteína, carboidrato, gordura) por kg de peso corporal, com valores baseados em literatura de nutrição esportiva (ISSN Position Stand 2017, Helms et al. 2014, Schoenfeld & Aragon 2018)
+- Base de 75 alimentos (referência TACO) com valores nutricionais por 100g
+- Registro de refeições do dia, com cálculo automático de calorias e macros consumidos
+- Tela de progresso diário: comparação visual entre consumido e meta, por caloria e por macronutriente, com aviso quando um macro está desbalanceado
+- Histórico de dias anteriores, com resumo visual de consumo por dia
+- Tratamento de erro em formulários (validação server-side, sem quebra da aplicação em entrada inválida)
+- Páginas de erro customizadas (404/500)
 
-Esse processo de “desenhar o sistema” foi essencial para transformar uma ideia solta em algo estruturado.
+## Decisões técnicas
 
-🎨 Interface e visão do sistema
+**Por que SQLite, e não outro banco:** o projeto é single-user, sem necessidade de servidor de banco separado — SQLite elimina fricção de configuração de ambiente sem sacrificar modelagem relacional real (três tabelas normalizadas, chaves estrangeiras, integridade referencial ativa via `PRAGMA foreign_keys`).
 
-Mesmo sendo um projeto de terminal, eu quis pensar na experiência do usuário.
+**Reset diário sem lógica de "reset":** a versão original em terminal precisava de uma rotina explícita para detectar mudança de dia e zerar os dados. Na versão web, isso deixou de ser necessário: cada refeição registrada carrega sua própria data, então o histórico nunca é sobrescrito — o "dia atual" é apenas um filtro de consulta, não um estado que precisa ser resetado.
 
-Estudando um pouco sobre design de interfaces, cheguei até o Figma e fiz um esboço simples de como seria a estrutura do sistema, como se fosse uma interface visual, mesmo que ele rodasse apenas no terminal.
+**Cálculo de macros feito via JOIN, não pré-calculado:** os valores de calorias/proteína/carboidrato/gordura de cada refeição não são armazenados prontos no banco — são calculados no momento da consulta, multiplicando a quantidade registrada pelos valores nutricionais do alimento (via `JOIN` entre `registro_refeicao` e `alimento`). Isso evita duplicação de dado e mantém uma única fonte de verdade para os valores nutricionais.
 
-Isso me ajudou a pensar melhor na organização dos menus e na lógica de navegação.
+**Separação de camadas:** `app.py` cuida exclusivamente de rotas (entrada de requisição, orquestração, resposta); `database.py` cuida exclusivamente de acesso a dados. Nenhuma rota executa SQL diretamente.
 
-💻 Construção do backend (em Python puro)
+**Sem login/múltiplos usuários:** decisão consciente de escopo — o sistema foi desenhado para uso pessoal único, evitando complexidade de autenticação sem propósito real no estágio atual do projeto.
 
-Com a base planejada, comecei a implementação utilizando os conhecimentos que já tinha:
+## Como rodar localmente
 
-lógica de programação
-entrada e saída de dados
-estruturas condicionais (if/else/elif)
-laços de repetição (while e for)
-funções (def)
-listas e dicionários
+```bash
+git clone https://github.com/vitorrodrigues-dev/voc-_no_controle.git
+cd voc-_no_controle
 
-Durante esse processo, percebi na prática como o código começa a fazer sentido quando quebramos problemas grandes em pequenas funções.
+python -m venv venv
+venv\Scripts\activate        # Windows
+# source venv/bin/activate   # Linux/Mac
 
-💾 Persistência de dados com JSON
+pip install -r requirements.txt
 
-Um dos primeiros desafios foi entender como salvar informações para não perder tudo ao fechar o programa.
+python seed.py                # cria o banco e popula a base de alimentos
+python app.py                  # inicia o servidor
+```
 
-Foi aí que comecei a estudar e aplicar o uso de arquivos JSON, com ajuda de conteúdos e referências como canais de programação no YouTube (ex: Otávio Miranda e Hashtag Programação).
+Acesse `http://127.0.0.1:5000` no navegador.
 
-Com isso, consegui salvar dados como:
+## Estrutura do projeto
 
-ficha do usuário
-refeições do dia
-progresso da dieta
-📅 Automação e lógica de tempo
+voc-_no_controle/
+├── app.py # rotas Flask
+├── database.py # acesso a dados (SQLite)
+├── schema.sql # definição das tabelas
+├── seed.py # popula o banco com a base de alimentos
+├── templates/ # HTML (Jinja2, herança via base.html)
+├── static/
+│ ├── css/style.css
+│ └── js/script.js
+└── legado/ # versão original em terminal (pré-migração)
 
-Um dos recursos mais interessantes do projeto foi a implementação do reset diário da dieta.
+## Sobre a pasta `legado/`
 
-Para isso, utilizei o módulo datetime do Python, permitindo que o sistema identificasse a mudança de dia e reiniciasse os dados automaticamente.
-
-🍽️ Cálculo nutricional e base científica
-
-Na parte de cálculo, utilizei a fórmula de Harris-Benedict para estimar o TMB (Taxa Metabólica Basal), além de fatores de atividade para estimar gasto calórico total.
-
-Também trabalhei com estimativas de déficit e superávit calórico para definir metas de dieta.
-
-📊 Base de alimentos
-
-Criei um dicionário com diversos alimentos e seus valores nutricionais (aproximadamente 70 itens), baseado em tabelas nutricionais públicas como a TACO (Tabela Brasileira de Composição de Alimentos).
-
-⚙️ Evolução durante o desenvolvimento
-
-Durante o desenvolvimento, aprendi também conceitos importantes como:
-
-uso de with open para manipulação de arquivos
-criação de funções auxiliares para inputs (perguntar_int, perguntar_float)
-organização de código para evitar repetição
-🧩 Aprendizado mais importante
-
-No início, eu tinha receio de começar projetos maiores.
-
-Mas ao longo do desenvolvimento, percebi que programação não é sobre “sair codando”, e sim sobre planejamento, divisão de problemas e construção por etapas.
-
-Foi aí que o projeto começou a tomar forma de verdade.
-
-🚀 Experiência pessoal
-
-Esse projeto marcou minha evolução inicial com Python.
-
-Mesmo sabendo que ainda existem melhorias a serem feitas, estou muito satisfeito com esse passo na minha jornada.
-
-Além disso, aproveitei para aplicar também conhecimentos de Git e GitHub, realizando o versionamento e upload do projeto via terminal.
-
-📌 Tecnologias utilizadas
-Python
-JSON
-datetime
-Git & GitHub
-🎯 Objetivo do projeto
-
-Criar um sistema funcional de controle nutricional no terminal, aplicando lógica de programação, estruturação de dados e persistência local, como forma de aprendizado prático em Python.
-
-<img width="600" height="645" alt="image" src="https://github.com/user-attachments/assets/ca8157f8-decc-462f-bea1-43bc0e35c1ed" /> 
-Arquivo criado no Figma utilzado como base
-
-
+Contém a implementação original do projeto: um sistema de terminal em Python puro, com persistência em JSON, que deu origem à versão web atual. Mantida no repositório como registro da evolução do projeto, não como parte funcional da aplicação atual.
